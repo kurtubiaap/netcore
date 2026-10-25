@@ -1,0 +1,30 @@
+services:
+  backend:
+    build: .
+    container_name: netcore-backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - APP_PORT=8080
+      - APP_HOST=0.0.0.0
+      - DB_PATH=/app/data/netcore.db
+      - JWT_SECRET=${JWT_SECRET}
+      - WHATSAPP_GATEWAY_URL=${WHATSAPP_GATEWAY_URL}
+      - WHATSAPP_GATEWAY_USERNAME=${WHATSAPP_GATEWAY_USERNAME}
+      - WHATSAPP_GATEWAY_PASSWORD=${WHATSAPP_GATEWAY_PASSWORD}
+      - GIN_MODE=release
+    volumes:
+      - sqlite_data:/app/data
+
+  frontend:
+    build: ./frontend
+    container_name: netcore-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  sqlite_data:
